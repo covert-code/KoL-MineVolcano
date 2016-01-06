@@ -9,10 +9,14 @@ script "minevolcano.ash";
      I'm glad you're using this but I have
              enough mail already :P
 
+   GCLI Usage: minevolcano <turns to spend>
+
 **********************************************/
 
 /***
 Strategy:
+
+Check that everything's okay, equip stuff/heal if necessary.
 Visit the mine URL and load the page.
 If no sparkles are present, and nothing has been mined, mine a random non-edge square.
 If no sparkles are present, and at least one square has been mined, reset.
