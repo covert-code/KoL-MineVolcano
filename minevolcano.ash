@@ -29,10 +29,16 @@ string mineurl = "mining.php?mine=6";
 
 // The amount of base hot resistant requireed to mine
 int hot15amount = 83.26;
-//Check has high-temp drill equipped
+// whether or not a mysticality bonus is granted
+boolean mystbonus = (my_class() == $class[pastamancer] || my_class() == $class[sauceror]);
+
+//high-temp drill equipment
 item drill = $item[high-temperature mining drill];
 item broken = $item[broken high-temperature mining drill];
 item sheets = $item[heat-resistant sheet metal];
+// Xiblaxian holowristputer and whether or not to try equipping it.
+item wristputer = $item[xiblaxian holo-wrist-puter];
+boolean tryputer = true;
 
 // The contents of the mine page.
 string page;
@@ -66,10 +72,22 @@ boolean objdetect() {
 boolean hot15resist() {
 	float base_resist_limit = hot15amount;
 	class myclass = my_class();
-	if (myclass == $class[pastamancer] || myclass == $class[sauceror]) {
+	if (mystbonus) {
 		base_resist_limit = base_resist_limit + 5;
 	}
 	return elemental_resistance($element[hot]) > base_resist_limit;
+}
+
+// Tries to put a wristputer in a given accessory slot, if it does not upset hotres.
+// Returns true if succesful.
+boolean wristputerIn(slot place) {
+	item swap = equipped_item(place);
+	equip(place, wristputer);
+	if (hot15resist()) {
+		return true;
+	}
+	equip(place, swap);
+	return false;
 }
 
 // Returns if it is possible to mine at the 70s volcano.
@@ -100,11 +118,24 @@ boolean canMine() {
     		throwErr("More hot resistance needed.");
     		return false;
     	}
+    	// Attempt to swap in a xiblaxian holowristputer if one is owned.
+    	if (tryputer && (! have_equpped(wristputer))) {
+	    	if (item_amount(wristputer) != 0 || closet_amount(wristputer) != 0) {
+	    		if (item_amount(wristputer) == 0) {
+	    			take_closet(1, wristputer)
+	    		}
+	    		tryputer = wristputerIn($slot[acc3]) || wristputerIn($slot[acc2]) || wristputerIn($slot[acc3]);
+	    	} else {
+	    		tryputer = false;
+	    	}
+	    }
    	}
 
-   		//Checks that the player has survivable health.
-	if (my_hp() < 30) {
-		throwErr("Needs at least 30 hp.");
+   	//Checks that the player has survivable health.
+   	float healthmultiplier = (100 - elemental_resistance($element[hot])) / 100;
+   	int minhp = healthmultiplier * 70;
+	if (my_hp() < minhp) {
+		throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
 		return false;
 	}
 
