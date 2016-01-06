@@ -90,6 +90,13 @@ boolean wristputerIn(slot place) {
 	return false;
 }
 
+// Returns if one is wearing a wristputer or not.
+boolean wearingWristputer() {
+	return (equipped_item($slot[acc1]) == wristputer)
+	|| (equipped_item($slot[acc2]) == wristputer)
+	|| (equipped_item($slot[acc3]) == wristputer);
+}
+
 // Returns if it is possible to mine at the 70s volcano.
 // Will attempt to construct and equip the proper equipment.
 boolean canMine() {
@@ -113,18 +120,18 @@ boolean canMine() {
 
 	//Check has 15 hot resistance. If not, attempt to do it.
 	if (! hot15resist()) {
-		maximize("Hot Resistance -1weapon -1offhand", 0, 0, false));
+		maximize("Hot Resistance -1weapon -1offhand", 0, 0, false);
 		if (! hot15resist()) {
     		throwErr("More hot resistance needed.");
     		return false;
     	}
     	// Attempt to swap in a xiblaxian holowristputer if one is owned.
-    	if (tryputer && (! have_equpped(wristputer))) {
+    	if (tryputer && (! wearingWristputer())) {
 	    	if (item_amount(wristputer) != 0 || closet_amount(wristputer) != 0) {
 	    		if (item_amount(wristputer) == 0) {
-	    			take_closet(1, wristputer)
+	    			take_closet(1, wristputer);
 	    		}
-	    		tryputer = wristputerIn($slot[acc3]) || wristputerIn($slot[acc2]) || wristputerIn($slot[acc3]);
+	    		tryputer = wristputerIn($slot[acc3]) || wristputerIn($slot[acc2]) || wristputerIn($slot[acc1]);
 	    	} else {
 	    		tryputer = false;
 	    	}
@@ -299,5 +306,8 @@ void main(int turns) {
 	if (delta > 0) {
 		messagecolor = "green";
 	}
-	print("Obtained " + delta + " 1,970 carat golds.", messagecolor);
+
+	int avgvalue = delta * 19700 / turns;
+	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
+	print("Average value: " + avgvalue, messagecolor);
 }
