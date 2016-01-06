@@ -27,6 +27,13 @@ location mine = $location[The Velvet / Gold Mine];
 // The URL of the velvet mine.
 string mineurl = "mining.php?mine=6";
 
+// The amount of base hot resistant requireed to mine
+int hot15amount = 83.26;
+//Check has high-temp drill equipped
+item drill = $item[high-temperature mining drill];
+item broken = $item[broken high-temperature mining drill];
+item sheets = $item[heat-resistant sheet metal];
+
 // The contents of the mine page.
 string page;
 // Whether or not a mark has been made.
@@ -55,6 +62,16 @@ boolean objdetect() {
 	return (have_effect($effect[Object Detection]) != 0) || is_wearing_outfit("Dwarvish War Uniform");
 }
 
+// Returns whether or not 15 hot resistance is available.
+boolean hot15resist() {
+	float base_resist_limit = hot15amount;
+	class myclass = my_class();
+	if (myclass == $class[pastamancer] || myclass == $class[sauceror]) {
+		base_resist_limit = base_resist_limit + 5;
+	}
+	return elemental_resistance($element[hot]) > base_resist_limit;
+}
+
 // Returns if it is possible to mine at the 70s volcano.
 // Will attempt to construct and equip the proper equipment.
 boolean canMine() {
@@ -72,20 +89,24 @@ boolean canMine() {
 	
 	//Checks that the player is not beaten up
 	if (have_effect($effect[Beaten Up]) != 0) {
-		throwErr("You got beaten up somewhere.");
+		throwErr("You got beaten up somewhere. Heal first.");
 		return false;
 	}
 
-	//Checks that the player has at least 30 health.
+	//Check has 15 hot resistance. If not, attempt to do it.
+	if (! hot15resist()) {
+		maximize("Hot Resistance", "-1weapon", "-1offhand", 0, 0, false));
+		if (! hot15resist()) {
+    		throwErr("More hot resistance needed.");
+    		return false;
+    	}
+   	}
+
+   		//Checks that the player has survivable health.
 	if (my_hp() < 30) {
 		throwErr("Needs at least 30 hp.");
 		return false;
 	}
-
-	//Check has high-temp drill equipped
-	item drill = $item[high-temperature mining drill];
-	item broken = $item[broken high-temperature mining drill];
-	item sheets = $item[heat-resistant sheet metal];
 
 	if (equipped_item($slot[weapon]) != drill) {
 		// If there isn't an inventory drill but the closet has one, take it.
@@ -129,12 +150,6 @@ boolean canMine() {
 		}
 
 	}
-
-	//Check has 15 hot resistance
-	if (elemental_resistance($element[hot]) < 15) {
-    	throwErr((15 - elemental_resistance($element[hot])) + "more hot resistance needed.");
-    	return false;
-   	}
 
 	//Check for no object detection
 	if (objdetect()) {
