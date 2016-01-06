@@ -143,7 +143,12 @@ boolean canMine() {
    	int minhp = healthmultiplier * 70;
 	if (my_hp() < minhp) {
 		throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
-		return false;
+		int hprestore = 2 * minhp + my_hp();
+		print("Attempting to restore hp to " + hprestore, "gray");
+		if (! restore_hp(hprestore)) {
+			throwErr("Unable to restore!");
+			return false;
+		}
 	}
 
 	if (equipped_item($slot[weapon]) != drill) {
