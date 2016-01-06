@@ -36,6 +36,8 @@ int hot15amount = 83.26;
 // whether or not a mysticality bonus is granted
 boolean mystbonus = (my_class() == $class[pastamancer] || my_class() == $class[sauceror]);
 
+//gold!
+item gold = $item[1,970 carat gold]
 //high-temp drill equipment
 item drill = $item[high-temperature mining drill];
 item broken = $item[broken high-temperature mining drill];
@@ -253,7 +255,7 @@ boolean hasTarget() {
 // Check for a gold reset.
 void checkAfter(string result) {
 	int[item] itemsFound = extract_items(result);
-	if (itemsFound contains $item[1,970 carat gold]) {
+	if (itemsFound contains gold) {
 		print("Struck gold!", "blue");
 		mineReset();
 	}
@@ -300,8 +302,9 @@ void mine() {
 
 // Runs the script for TURNS adventures.
 void main(int turns) {
-	int startingct=item_amount($item[1,970 carat gold]);
+	int startingct=item_amount(gold);
 	int temp = turns;
+	int time = gametime_to_int();
 
 	while (temp > 0 && running) {
 		refresh();
@@ -309,14 +312,20 @@ void main(int turns) {
 		temp = temp - 1;
 	}
 
-	int delta = item_amount($item[1,970 carat gold]) - startingct;
+	int time = gametime_to_int() - time;
+	float seconds = time/1000;
+
+	int delta = item_amount(gold) - startingct;
 
 	string messagecolor = "red";
 	if (delta > 0) {
 		messagecolor = "green";
 	}
 
+	int totalvalue = delta * 19700;
 	int avgvalue = delta * 19700 / turns;
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
-	print("Average value: " + avgvalue + " meat/adventure", messagecolor);
+	print("Total session gold value: " + totalvalue + " meat this", messagecolor);
+	print("Average session value: " + avgvalue + " meat/adventure", messagecolor);
+	print("Runtime: " + seconds + " secs, or " + (time/turns) + "ms/adv at " + (totalvalue/seconds) + " meat/second", "gray");
 }
