@@ -312,7 +312,7 @@ void main(int turns) {
 		temp = temp - 1;
 	}
 
-	int time = gametime_to_int() - time;
+	time = gametime_to_int() - time;
 	float seconds = time/1000;
 
 	int delta = item_amount(gold) - startingct;
