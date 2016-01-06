@@ -324,9 +324,11 @@ void main(int turns) {
 
 	int totalvalue = delta * 19700;
 	int avgvalue = delta * 19700 / turns;
+	int msperadv = time/turns;
+	int meatpersec = totalvalue/seconds;
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
 	print("Total session gold value: " + totalvalue + " meat", messagecolor);
 	print("Average session value: " + avgvalue + " meat/adventure", messagecolor);
-	print("Runtime: " + seconds + " secs, or " + (time/turns) + "ms/adv at " + (totalvalue/seconds) + " meat/second", "gray");
+	print("Runtime: " + seconds + " secs, or " + msperadv + "ms/adv at " + meatpersec + " meat/second", "gray");
 	autosell(delta, gold);
 }
