@@ -287,6 +287,7 @@ void mine() {
 				//if so, reset.
 				print("No more sparklies here.", "gray");
 				mineReset();
+				mine();
 			} else {
 				// mine a central square in the first row.
 				print("Trying a spot.", "gray");
