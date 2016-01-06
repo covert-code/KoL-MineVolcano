@@ -250,7 +250,7 @@ boolean hasTarget() {
 void checkAfter(string result) {
 	int[item] itemsFound = extract_items(result);
 	if (itemsFound contains $item[1,970 carat gold]) {
-		print("Struck gold!", "yellow");
+		print("Struck gold!", "blue");
 		mineReset();
 	}
 }
@@ -314,5 +314,5 @@ void main(int turns) {
 
 	int avgvalue = delta * 19700 / turns;
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
-	print("Average value: " + avgvalue, messagecolor);
+	print("Average value: " + avgvalue + " meat/adventure", messagecolor);
 }
