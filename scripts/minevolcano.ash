@@ -37,7 +37,7 @@ int hot15amount = 83.26;
 boolean mystbonus = (my_class() == $class[pastamancer] || my_class() == $class[sauceror]);
 
 //gold!
-item gold = $item[1,970 carat gold]
+item gold = $item[1,970 carat gold];
 //high-temp drill equipment
 item drill = $item[high-temperature mining drill];
 item broken = $item[broken high-temperature mining drill];
