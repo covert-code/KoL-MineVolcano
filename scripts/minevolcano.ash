@@ -331,6 +331,10 @@ void main(int turns) {
 		return;
 	}
 
+	if (time == 0) {
+		time = 1;
+	}
+
 	if (! running) {
 		throwErr("<<- Attention needed! Early termination. ->>");
 		newline();
