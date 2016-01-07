@@ -271,6 +271,8 @@ void mineAtSpot(int col, int row) {
 
 // Does one mining turn in the optimal pattern.
 void mine() {
+	// Fetch fresh data!
+	refresh();
 	// If one can mine,
 	if (canMine()) {
 	   //are there accessible sparkles within the first two rows? (helper)
@@ -284,7 +286,6 @@ void mine() {
 				//if so, reset.
 				print("No more sparklies here.", "gray");
 				mineReset();
-				refresh();
 				mine();
 			} else {
 				// mine a central square in the first row.
@@ -311,7 +312,6 @@ void main(int turns) {
 	int time = gametime_to_int();
 
 	while (temp > 0 && running) {
-		refresh();
 		mine();
 		temp = temp - 1;
 	}
