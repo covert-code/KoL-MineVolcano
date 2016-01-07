@@ -317,7 +317,7 @@ void main(int turns) {
 	}
 
 	turns = turns - temp;
-	time = gametime_to_int() - time;
+	time = max(1, gametime_to_int() - time);
 
 	newline();
 
@@ -326,29 +326,25 @@ void main(int turns) {
 		return;
 	}
 
-	if (time == 0) {
-		time = 1;
-	}
-
 	if (! running) {
 		throwErr("<<- Attention needed! Early termination. ->>");
 		newline();
 	}
 
 	// Diagnostics.
-	float seconds = time/1000;
+	float seconds = max(time/1000, 0.001);
 	int delta = item_amount(gold) - startingct;
 	string messagecolor = "red";
 	if (delta > 0) {
 		messagecolor = "green";
 	}
 	int totalvalue = delta * 19700;
-	int avgvalue = delta * 19700 / turns;
-	int msperadv = time/turns;
+	int avgvalue = delta * 19700 / max(1, turns);
+	int msperadv = time/max(1, turns);
 	int meatpersec = totalvalue/seconds;
 
 	// Write data to file.
-	int logsecs = (time+500)/1000;
+	int logsecs = max(1, (time+500)/1000);
 	int[string] logdata;
 	file_to_map("pjbminer_data.txt", logdata);
 	logdata["RuntimeSec"] = logdata["RuntimeSec"] + logsecs;
@@ -368,7 +364,7 @@ void main(int turns) {
 
 	// Print the lifetime report
 	int lifemeat = logdata["GoldPieces"] * 19700;
-	int lifemeatrate = lifemeat / logdata["Adventures"];
+	int lifemeatrate = lifemeat / max(logdata["Adventures"], 1);
 
 	newline();
 	print("=== Version Lifetime (data/pjbminer_data.txt) ===", "black");
