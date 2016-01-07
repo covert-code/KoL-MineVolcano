@@ -313,23 +313,42 @@ void main(int turns) {
 		temp = temp - 1;
 	}
 
+	turns = turns - temp;
 	time = gametime_to_int() - time;
+
+	// Diagnostics.
 	float seconds = time/1000;
-
 	int delta = item_amount(gold) - startingct;
-
 	string messagecolor = "red";
 	if (delta > 0) {
 		messagecolor = "green";
 	}
-
 	int totalvalue = delta * 19700;
 	int avgvalue = delta * 19700 / turns;
 	int msperadv = time/turns;
 	int meatpersec = totalvalue/seconds;
+
+	// Write data to file.
+	string[int] logdata;
+	file_to_map("pjbminer_data.txt", logdata);
+	logdata["Runtime_ms"] = logdata["Runtime_ms"] + time;
+	logdata["Gold count"] = logdata["Gold count"] + delta;
+	logdata["Adventures"] = logdata["Adventures"] + turns;
+	map_to_file(logdata, "pjbminer_data.txt");
+
+	print("\\n=== Report: Results this Session ===\\n", "black");
+
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
 	print("Total session gold value: " + totalvalue + " meat", messagecolor);
 	print("Average session value: " + avgvalue + " meat/adventure", messagecolor);
 	print("Runtime: " + seconds + " secs, or " + msperadv + "ms/adv at " + meatpersec + " meat/second", "gray");
+
+	print("\\n=== Lifetime (data/pjbminer_data.txt) ===\\n", "black");
+	int lifemeat = logdata["Gold count"] * 19700;
+	int lifemeatrate = lifemeat / logdata["Adventures"];
+	print("Obtained" + logdata["Gold count"] + " gold pieces for " + lifemeat + " meat.", "gray");
+	print("Used " + logdata["Runtime_ms"] + " ms to spend " + logdata["Adventures"] " adventures.", "gray");
+	print("Average gain: " + lifemeatrate + " meat / adv", "gray");
+
 	autosell(delta, gold);
 }
