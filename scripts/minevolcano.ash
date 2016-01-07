@@ -291,7 +291,7 @@ void mine() {
 			} else {
 				// mine a central square in the first row.
 				print("Trying a spot.", "gray");
-				mineAtSpot(3, 6);
+				mineAtSpot(2 + random(4), 6);
 			}
 		}
 	} else {
