@@ -242,7 +242,6 @@ void refresh() {
 void mineReset() {
 	print("Resetting mine.", "gray");
 	visit_url("mining.php?reset=1&mine=6" + pwhash, true);
-	mined = false;
 }
 
 // Returns whether a sparkly target is in reach.
@@ -285,6 +284,7 @@ void mine() {
 				//if so, reset.
 				print("No more sparklies here.", "gray");
 				mineReset();
+				refresh();
 				mine();
 			} else {
 				// mine a central square in the first row.
