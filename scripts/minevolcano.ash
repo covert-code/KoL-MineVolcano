@@ -353,7 +353,7 @@ void main(int turns) {
 
 	print("\\n=== Version Lifetime (data/pjbminer_data.txt) ===\\n", "black");
 	print("Obtained" + logdata["GoldPieces"] + " gold pieces for " + lifemeat + " meat.", "gray");
-	print("Used " + logdata["RuntimeSec"] + " secs to spend " + logdata["Adventures"] " adventures.", "gray");
+	print("Used " + logdata["RuntimeSec"] + " secs to spend " + logdata["Adventures"] + " adventures.", "gray");
 	print("Average gain: " + lifemeatrate + " meat / adv", "gray");
 
 	print("\\n\\n");
