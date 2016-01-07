@@ -1,0 +1,3 @@
+RuntimeSec	0
+GoldPieces	0
+Adventures	0
