@@ -1,5 +1,8 @@
 script "minevolcano.ash";
 
+// Change this if you don't want to autosell.
+boolean autosell_gold = true;
+
 /**********************************************
                  Developed by:
       the coding arm of ProfessorJellybean.
@@ -329,26 +332,32 @@ void main(int turns) {
 	int meatpersec = totalvalue/seconds;
 
 	// Write data to file.
+	int logsecs = (time+500)/1000;
 	string[int] logdata;
 	file_to_map("pjbminer_data.txt", logdata);
-	logdata["Runtime_ms"] = logdata["Runtime_ms"] + time;
-	logdata["Gold count"] = logdata["Gold count"] + delta;
+	logdata["RuntimeSec"] = logdata["RuntimeSec"] + logsecs;
+	logdata["GoldPieces"] = logdata["GoldPieces"] + delta;
 	logdata["Adventures"] = logdata["Adventures"] + turns;
 	map_to_file(logdata, "pjbminer_data.txt");
 
+	// Print the session report
 	print("\\n=== Report: Results this Session ===\\n", "black");
-
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
 	print("Total session gold value: " + totalvalue + " meat", messagecolor);
 	print("Average session value: " + avgvalue + " meat/adventure", messagecolor);
 	print("Runtime: " + seconds + " secs, or " + msperadv + "ms/adv at " + meatpersec + " meat/second", "gray");
 
-	print("\\n=== Lifetime (data/pjbminer_data.txt) ===\\n", "black");
-	int lifemeat = logdata["Gold count"] * 19700;
+	// Print the lifetime report
+	int lifemeat = logdata["GoldPieces"] * 19700;
 	int lifemeatrate = lifemeat / logdata["Adventures"];
-	print("Obtained" + logdata["Gold count"] + " gold pieces for " + lifemeat + " meat.", "gray");
-	print("Used " + logdata["Runtime_ms"] + " ms to spend " + logdata["Adventures"] " adventures.", "gray");
+
+	print("\\n=== Version Lifetime (data/pjbminer_data.txt) ===\\n", "black");
+	print("Obtained" + logdata["GoldPieces"] + " gold pieces for " + lifemeat + " meat.", "gray");
+	print("Used " + logdata["RuntimeSec"] + " secs to spend " + logdata["Adventures"] " adventures.", "gray");
 	print("Average gain: " + lifemeatrate + " meat / adv", "gray");
 
-	autosell(delta, gold);
+	print("\\n\\n");
+	if (autosell_gold) {
+		autosell(delta, gold);
+	}
 }
