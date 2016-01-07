@@ -349,8 +349,9 @@ void main(int turns) {
 	logdata["Adventures"] = logdata["Adventures"] + turns;
 	map_to_file(logdata, "pjbminer_data.txt");
 
+	println();
 	// Print the session report
-	print("\\n=== Report: Results this Session ===\\n", "black");
+	print("\n=== Report: Results this Session ===\n", "black");
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
 	print("Total session gold value: " + totalvalue + " meat", messagecolor);
 	print("Average session value: " + avgvalue + " meat/adventure", messagecolor);
@@ -360,12 +361,12 @@ void main(int turns) {
 	int lifemeat = logdata["GoldPieces"] * 19700;
 	int lifemeatrate = lifemeat / logdata["Adventures"];
 
-	print("\\n=== Version Lifetime (data/pjbminer_data.txt) ===\\n", "black");
+	print("\n=== Version Lifetime (data/pjbminer_data.txt) ===\n", "black");
 	print("Obtained" + logdata["GoldPieces"] + " gold pieces for " + lifemeat + " meat.", "gray");
 	print("Used " + logdata["RuntimeSec"] + " secs to spend " + logdata["Adventures"] + " adventures.", "gray");
 	print("Average gain: " + lifemeatrate + " meat / adv", "gray");
 
-	print("\\n\\n");
+	print("\n\n");
 	if (autosell_gold) {
 		autosell(delta, gold);
 	}
