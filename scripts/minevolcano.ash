@@ -129,7 +129,7 @@ boolean canMine() {
 
 	//Check has 15 hot resistance. If not, attempt to do it.
 	if (! hot15resist()) {
-		maximize("Hot Resistance -1weapon -1offhand", 0, 0, false);
+		maximize("Hot Resistance -1weapon -1offhand -1familiar", 0, 0, false);
 		if (! hot15resist()) {
     		throwErr("More hot resistance needed.");
     		return false;
