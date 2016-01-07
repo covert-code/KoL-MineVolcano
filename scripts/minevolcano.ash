@@ -319,6 +319,11 @@ void main(int turns) {
 	turns = turns - temp;
 	time = gametime_to_int() - time;
 
+	if (turns == 0) {
+		throwErr("No turns spent.");
+		return;
+	}
+	
 	// Diagnostics.
 	float seconds = time/1000;
 	int delta = item_amount(gold) - startingct;
