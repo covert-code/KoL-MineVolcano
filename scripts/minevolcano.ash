@@ -326,7 +326,6 @@ void main(int turns) {
 
 	if (! running) {
 		throwErr("<<=== Attention needed! Early termination. ===>>");
-		return;
 	}
 
 	// Diagnostics.
