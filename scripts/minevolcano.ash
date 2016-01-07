@@ -222,12 +222,6 @@ void resetData() {
 
 // Refreshes the PAGE object and snips out the table.
 void refresh() {
-	// Check if the player has access
-    if (mine == $location[none]) {
-		throwErr("Cannot find the mine.");
-		return;
-	}
-
 	page = visit_url(mineurl);
 	resetData();
 
