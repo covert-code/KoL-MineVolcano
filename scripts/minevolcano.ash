@@ -323,7 +323,12 @@ void main(int turns) {
 		throwErr("No turns spent.");
 		return;
 	}
-	
+
+	if (! running) {
+		throwErr("<<=== Attention needed! Early termination. ===>>");
+		return;
+	}
+
 	// Diagnostics.
 	float seconds = time/1000;
 	int delta = item_amount(gold) - startingct;
