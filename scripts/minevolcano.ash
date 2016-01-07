@@ -222,12 +222,6 @@ void resetData() {
 
 // Refreshes the PAGE object and snips out the table.
 void refresh() {
-	// Check if the player has access
-    if (mine == $location[none]) {
-		throwErr("Cannot find the mine.");
-		return;
-	}
-
 	page = visit_url(mineurl);
 	resetData();
 
@@ -277,6 +271,8 @@ void mineAtSpot(int col, int row) {
 
 // Does one mining turn in the optimal pattern.
 void mine() {
+	// Fetch fresh data!
+	refresh();
 	// If one can mine,
 	if (canMine()) {
 	   //are there accessible sparkles within the first two rows? (helper)
@@ -304,6 +300,11 @@ void mine() {
 	return;
 }
 
+// Prints an empty line. Because ASH is stupid.
+void newline() {
+	print(" ", "gray");
+}
+
 // Runs the script for TURNS adventures.
 void main(int turns) {
 	int startingct=item_amount(gold);
@@ -311,13 +312,28 @@ void main(int turns) {
 	int time = gametime_to_int();
 
 	while (temp > 0 && running) {
-		refresh();
 		mine();
 		temp = temp - 1;
 	}
 
 	turns = turns - temp;
 	time = gametime_to_int() - time;
+
+	newline();
+
+	if (turns == 0) {
+		throwErr("No turns spent.");
+		return;
+	}
+
+	if (time == 0) {
+		time = 1;
+	}
+
+	if (! running) {
+		throwErr("<<- Attention needed! Early termination. ->>");
+		newline();
+	}
 
 	// Diagnostics.
 	float seconds = time/1000;
@@ -333,7 +349,7 @@ void main(int turns) {
 
 	// Write data to file.
 	int logsecs = (time+500)/1000;
-	string[int] logdata;
+	int[string] logdata;
 	file_to_map("pjbminer_data.txt", logdata);
 	logdata["RuntimeSec"] = logdata["RuntimeSec"] + logsecs;
 	logdata["GoldPieces"] = logdata["GoldPieces"] + delta;
@@ -341,23 +357,31 @@ void main(int turns) {
 	map_to_file(logdata, "pjbminer_data.txt");
 
 	// Print the session report
-	print("\\n=== Report: Results this Session ===\\n", "black");
+	newline();
+	print("=== Report: Results this Session ===", "black");
+	newline();
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
 	print("Total session gold value: " + totalvalue + " meat", messagecolor);
 	print("Average session value: " + avgvalue + " meat/adventure", messagecolor);
 	print("Runtime: " + seconds + " secs, or " + msperadv + "ms/adv at " + meatpersec + " meat/second", "gray");
+	newline();
 
 	// Print the lifetime report
 	int lifemeat = logdata["GoldPieces"] * 19700;
 	int lifemeatrate = lifemeat / logdata["Adventures"];
 
-	print("\\n=== Version Lifetime (data/pjbminer_data.txt) ===\\n", "black");
+	newline();
+	print("=== Version Lifetime (data/pjbminer_data.txt) ===", "black");
+	newline();
 	print("Obtained" + logdata["GoldPieces"] + " gold pieces for " + lifemeat + " meat.", "gray");
-	print("Used " + logdata["RuntimeSec"] + " secs to spend " + logdata["Adventures"] " adventures.", "gray");
+	print("Used " + logdata["RuntimeSec"] + " secs to spend " + logdata["Adventures"] + " adventures.", "gray");
 	print("Average gain: " + lifemeatrate + " meat / adv", "gray");
+	newline();
 
-	print("\\n\\n");
+	// Autosell gold.
+	newline();
 	if (autosell_gold) {
 		autosell(delta, gold);
 	}
+	newline();
 }
