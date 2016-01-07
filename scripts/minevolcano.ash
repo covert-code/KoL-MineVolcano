@@ -349,7 +349,6 @@ void main(int turns) {
 	logdata["Adventures"] = logdata["Adventures"] + turns;
 	map_to_file(logdata, "pjbminer_data.txt");
 
-	println();
 	// Print the session report
 	print("\n=== Report: Results this Session ===\n", "black");
 	print("Obtained " + delta + " 1,970 carat golds in " + turns + " turns.", messagecolor);
