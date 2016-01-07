@@ -333,7 +333,7 @@ void main(int turns) {
 
 	// Write data to file.
 	int logsecs = (time+500)/1000;
-	string[int] logdata;
+	int[string] logdata;
 	file_to_map("pjbminer_data.txt", logdata);
 	logdata["RuntimeSec"] = logdata["RuntimeSec"] + logsecs;
 	logdata["GoldPieces"] = logdata["GoldPieces"] + delta;
