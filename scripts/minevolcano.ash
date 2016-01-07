@@ -271,11 +271,12 @@ void mineAtSpot(int col, int row) {
 
 // Does one mining turn in the optimal pattern.
 void mine() {
-	// Fetch fresh data!
-	refresh();
 	// If one can mine,
 	if (canMine()) {
-	   //are there accessible sparkles within the first two rows? (helper)
+		// Fetch fresh data!
+		refresh();
+
+		//are there accessible sparkles within the first two rows? (helper)
 		if (hasTarget()) {
 			// mine the sparkle.
 			mineAtSpot(target[0], target[1]);
