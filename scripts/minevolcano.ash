@@ -149,7 +149,7 @@ boolean canMine() {
 
    	//Checks that the player has survivable health.
    	float healthmultiplier = (100 - elemental_resistance($element[hot])) / 100;
-   	int minhp = healthmultiplier * 70;
+   	int minhp = healthmultiplier * 75;
 	if (my_hp() < minhp) {
 		throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
 		int hprestore = 2 * minhp + my_hp();
@@ -160,6 +160,7 @@ boolean canMine() {
 		}
 	}
 
+	// Check for a drill.
 	if (equipped_item($slot[weapon]) != drill) {
 		// If there isn't an inventory drill but the closet has one, take it.
 		if (item_amount(drill) == 0 && closet_amount(drill) != 0) {
