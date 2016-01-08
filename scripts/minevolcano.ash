@@ -279,7 +279,7 @@ void mine() {
 		//are there accessible sparkles within the first two rows? (helper)
 		if (hasTarget()) {
 			// mine the sparkle.
-			print("Sparkly found:" + target[0] + ", " + target[1] + ".", "gray");
+			print("Sparkly found at (" + target[0] + ", " + target[1] + ").", "gray");
 			mineAtSpot(target[0], target[1]);
 		}
 		else {
