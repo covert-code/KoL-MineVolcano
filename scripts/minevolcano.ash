@@ -50,7 +50,7 @@ item wristputer = $item[xiblaxian holo-wrist-puter];
 boolean tryputer = true;
 
 // The contents of the mine page.
-string page;
+string page = visit_url(mineurl);
 // Whether or not a mark has been made.
 boolean mined;
 // Whether or not a gold or a velvet has been found.
@@ -223,7 +223,6 @@ void resetData() {
 
 // Refreshes the PAGE object and snips out the table.
 void refresh() {
-	page = visit_url(mineurl);
 	resetData();
 
 	// Match open caverns in row 1 to determine if the page is mined.
@@ -242,7 +241,7 @@ void refresh() {
 // This is free!
 void mineReset() {
 	print("Resetting mine.", "gray");
-	visit_url("mining.php?reset=1&mine=6" + pwhash, true);
+	page = visit_url("mining.php?reset=1&mine=6" + pwhash, true);
 }
 
 // Returns whether a sparkly target is in reach.
@@ -263,11 +262,10 @@ void checkAfter(string result) {
 void mineAtSpot(int col, int row) {
 	print("Mining at square (" + col + ", "+ row + ")", "gray");
 	string url = mineurl;
-	int index = col + (8 * row);
-	url = url + "&which=" + index;
+	url = url + "&which=" + (col + (8 * row));
 	url = url + pwhash;
-	string result = visit_url(url, true);
-	checkAfter(result);
+	page = visit_url(url, true);
+	checkAfter(page);
 }
 
 // Does one mining turn in the optimal pattern.
@@ -324,9 +322,9 @@ void main(int turns) {
 
 	newline();
 
-	if (turns == 0) {
+	if (turns <= 0) {
+		turns = 0;
 		throwErr("No turns spent.");
-		return;
 	}
 
 	if (! running) {
