@@ -340,7 +340,7 @@ void main(int turns) {
 	}
 
 	turns = turns - temp;
-	time = max(1, gametime_to_int() - time);
+	time = gametime_to_int();
 
 	newline();
 
@@ -355,7 +355,7 @@ void main(int turns) {
 	}
 
 	// Diagnostics.
-	float seconds = max(time/1000, 0.001);
+	float seconds = time / 1000;
 	int delta = item_amount(gold) - startingct;
 	string messagecolor = "red";
 	if (delta > 0) {
@@ -363,11 +363,11 @@ void main(int turns) {
 	}
 	int totalvalue = delta * 19700;
 	int avgvalue = delta * 19700 / max(1, turns);
-	int msperadv = time/max(1, turns);
-	int meatpersec = totalvalue/seconds;
+	int msperadv = time / max(1, turns);
+	int meatpersec = totalvalue / max(1, seconds);
 
 	// Write data to file.
-	int logsecs = max(1, (time+500)/1000);
+	int logsecs = (time + 500) / 1000;
 	int[string] logdata;
 	file_to_map("pjbminer_data.txt", logdata);
 	logdata["RuntimeSec"] = logdata["RuntimeSec"] + logsecs;
