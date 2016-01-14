@@ -3,6 +3,9 @@ script "minevolcano.ash";
 // Change this if you don't want to autosell.
 boolean autosell_gold = true;
 
+// Whether or not we should check for a minimum survivable HP. If false, just hp>0. You may get beaten up.
+boolean survive = false;
+
 /**********************************************
                  Developed by:
       the coding arm of ProfessorJellybean.
@@ -28,6 +31,9 @@ If sparkles are present, mine the sparkle. (Ignore if in the velvet zone)
  - If $item[unsmoothed velvet] is found, reset. (contiguous velvet trap)
  - Else, let future iterations keep going at this one.
 ***/
+
+// Whether or not there's access to the mine.
+boolean access = get_property("hotAirportAlways").to_boolean() || get_property("_hotAirportToday").to_boolean();
 
 // The Location code of the velvet mine.
 location mine = $location[The Velvet / Gold Mine];
@@ -106,60 +112,8 @@ boolean wearingWristputer() {
 	|| (equipped_item($slot[acc3]) == wristputer);
 }
 
-// Returns if it is possible to mine at the 70s volcano.
-// Will attempt to construct and equip the proper equipment.
-boolean canMine() {
-	//Check if the player is not drunk.
-	if(my_inebriety() > inebriety_limit()) {
-		throwErr("You're drunk.");
-		return false;
-	}
-
-	//Checks for remaining adventures
-	if (my_adventures() == 0) {
-		throwErr("No adventures.");
-		return false;
-	}
-	
-	//Checks that the player is not beaten up
-	if (have_effect($effect[Beaten Up]) != 0) {
-		throwErr("You got beaten up somewhere. Heal first.");
-		return false;
-	}
-
-	//Check has 15 hot resistance. If not, attempt to do it.
-	if (! hot15resist()) {
-		maximize("Hot Resistance -1weapon -1offhand -1familiar", 0, 0, false);
-		if (! hot15resist()) {
-    		throwErr("More hot resistance needed.");
-    		return false;
-    	}
-    	// Attempt to swap in a xiblaxian holowristputer if one is owned.
-    	if (tryputer && (! wearingWristputer())) {
-	    	if (item_amount(wristputer) != 0 || closet_amount(wristputer) != 0) {
-	    		if (item_amount(wristputer) == 0) {
-	    			take_closet(1, wristputer);
-	    		}
-	    		tryputer = wristputerIn($slot[acc3]) || wristputerIn($slot[acc2]) || wristputerIn($slot[acc1]);
-	    	} else {
-	    		tryputer = false;
-	    	}
-	    }
-   	}
-
-   	//Checks that the player has survivable health.
-   	float healthmultiplier = (100 - elemental_resistance($element[hot])) / 100;
-   	int minhp = healthmultiplier * 75;
-	if (my_hp() < minhp) {
-		throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
-		int hprestore = 2 * minhp + my_hp();
-		print("Attempting to restore hp to " + hprestore, "gray");
-		if (! restore_hp(hprestore)) {
-			throwErr("Unable to restore!");
-			return false;
-		}
-	}
-
+// Ensure that there is a drill being worn, or make/equip one if not. Returns success.
+boolean drillcheck() {
 	// Check for a drill.
 	if (equipped_item($slot[weapon]) != drill) {
 		// If there isn't an inventory drill but the closet has one, take it.
@@ -201,8 +155,75 @@ boolean canMine() {
 			throwErr("drill cannot be equipped.");
 			return false;
 		}
-
 	}
+}
+
+// Returns if it is possible to mine at the 70s volcano.
+// Will attempt to construct and equip the proper equipment.
+boolean canMine() {
+	//Check that we can even find the place.
+	if (! access) {
+		throwErr("You can't even go there. What are you doing?");
+		return false;
+	}
+
+	//Check if the player is not drunk.
+	if (my_inebriety() > inebriety_limit()) {
+		throwErr("You're drunk.");
+		return false;
+	}
+
+	//Checks for remaining adventures
+	if (my_adventures() == 0) {
+		throwErr("No adventures.");
+		return false;
+	}
+
+	// Checks health in the specified mode.
+	if (survive) {
+		//Checks that the player has survivable health.
+	   	float healthmultiplier = (100 - elemental_resistance($element[hot])) / 100;
+	   	int minhp = healthmultiplier * 75;
+		if (my_hp() < minhp) {
+			throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
+			int hprestore = 2 * minhp + my_hp();
+			print("Attempting to restore hp to " + hprestore, "gray");
+			if (! restore_hp(hprestore)) {
+				throwErr("Unable to restore!");
+				return false;
+			}
+		}
+	} else {
+		if (my_hp() == 0) {
+			throwErr("Insufficent hp. You need at least 1 hp to mine.");
+			return false;
+		}
+	}
+
+	// Get drilling.
+	if (! drillcheck()) {
+		return false;
+	}
+
+	//Check has 15 hot resistance. If not, attempt to do it.
+	if (! hot15resist()) {
+		maximize("Hot Resistance -1weapon -1offhand -1familiar", 0, 0, false);
+		if (! hot15resist()) {
+    		throwErr("More hot resistance needed.");
+    		return false;
+    	}
+    	// Attempt to swap in a xiblaxian holowristputer if one is owned.
+    	if (tryputer && (! wearingWristputer())) {
+	    	if (item_amount(wristputer) != 0 || closet_amount(wristputer) != 0) {
+	    		if (item_amount(wristputer) == 0) {
+	    			take_closet(1, wristputer);
+	    		}
+	    		tryputer = wristputerIn($slot[acc3]) || wristputerIn($slot[acc2]) || wristputerIn($slot[acc1]);
+	    	} else {
+	    		tryputer = false;
+	    	}
+	    }
+   	}
 
 	//Check for no object detection
 	if (objdetect()) {
