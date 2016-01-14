@@ -156,6 +156,7 @@ boolean drillcheck() {
 			return false;
 		}
 	}
+	return true;
 }
 
 // Returns if it is possible to mine at the 70s volcano.
