@@ -1,10 +1,10 @@
 script "minevolcano.ash";
 
 // Change this if you don't want to autosell.
-boolean autosell_gold = true;
+boolean autosell_gold = !(false || get_property("minevolcano_pjb_noautosell").to_boolean());
 
 // Whether or not we should check for a minimum survivable HP. If false, just hp>0. You may get beaten up.
-boolean survive = false;
+boolean survive = false || get_property("minevolcano_pjb_survival").to_boolean();
 
 /**********************************************
                  Developed by:
