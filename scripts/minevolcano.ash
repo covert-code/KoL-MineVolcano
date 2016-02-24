@@ -71,7 +71,8 @@ string errcolor = "Red";
 // True until something goes horribly wrong. Setting false should induce global halt.
 boolean running = true;
 
-
+float healthmultiplier = 0;
+int minhp = 75;
 
 // Prints an error.
 void throwErr(string errmsg) {
@@ -180,27 +181,6 @@ boolean canMine() {
 		return false;
 	}
 
-	// Checks health in the specified mode.
-	if (survive) {
-		//Checks that the player has survivable health.
-	   	float healthmultiplier = (100 - elemental_resistance($element[hot])) / 100;
-	   	int minhp = healthmultiplier * 75;
-		if (my_hp() < minhp) {
-			throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
-			int hprestore = 2 * minhp + my_hp();
-			print("Attempting to restore hp to " + hprestore, "gray");
-			if (! restore_hp(hprestore)) {
-				throwErr("Unable to restore!");
-				return false;
-			}
-		}
-	} else {
-		if (my_hp() == 0) {
-			throwErr("Insufficent hp. You need at least 1 hp to mine.");
-			return false;
-		}
-	}
-
 	// Get drilling.
 	if (! drillcheck()) {
 		return false;
@@ -208,7 +188,7 @@ boolean canMine() {
 
 	//Check has 15 hot resistance. If not, attempt to do it.
 	if (! hot15resist()) {
-		if (!survive && my_hp() < 75) {
+		if (!survive && my_hp() < 13) {
 			maximize("15Hot Resistance, hp regen -1weapon -1offhand -1familiar", 0, 0, false);
 		} else {
 			maximize("Hot Resistance -1weapon -1offhand -1familiar", 0, 0, false);
@@ -229,6 +209,27 @@ boolean canMine() {
 	    	}
 	    }
    	}
+
+   	// Calculate the real minhp
+   	if (! survive) {
+	   	minhp = 1;
+	} else {
+		healthmultiplier = (100 - elemental_resistance($element[hot])) / 100;
+	   	minhp = healthmultiplier * 75;
+	}
+
+   	//Checks that the player has survivable health.
+	if (my_hp() < minhp) {
+		throwErr("Insufficent hp. You need at least " + minhp + " hp to mine safely.");
+		int hprestore = 2 * minhp + my_hp();
+		print("Attempting to restore hp to " + hprestore, "gray");
+		restore_mp(0);
+		restore_hp(minhp);
+		if (my_hp() < minhp) {
+			throwErr("Unable to restore!");
+			return false;
+		}
+	}
 
 	//Check for no object detection
 	if (objdetect()) {
