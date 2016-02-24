@@ -208,7 +208,7 @@ boolean canMine() {
 
 	//Check has 15 hot resistance. If not, attempt to do it.
 	if (! hot15resist()) {
-		if (! survive) {
+		if (!survive && my_hp() < 75) {
 			maximize("15Hot Resistance, hp regen -1weapon -1offhand -1familiar", 0, 0, false);
 		} else {
 			maximize("Hot Resistance -1weapon -1offhand -1familiar", 0, 0, false);
@@ -334,6 +334,10 @@ void newline() {
 
 // Runs the script for TURNS adventures.
 void main(int turns) {
+	// Get vision of the volcano.
+	cli_execute("\\go That 70s Volcano");
+	access = get_property("hotAirportAlways").to_boolean() || get_property("_hotAirportToday").to_boolean();
+
 	int startingct=item_amount(gold);
 	int temp = turns;
 	int time = gametime_to_int();
