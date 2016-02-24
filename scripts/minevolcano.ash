@@ -334,10 +334,6 @@ void newline() {
 
 // Runs the script for TURNS adventures.
 void main(int turns) {
-	// Get vision of the volcano.
-	cli_execute("\\go That 70s Volcano");
-	access = get_property("hotAirportAlways").to_boolean() || get_property("_hotAirportToday").to_boolean();
-
 	int startingct=item_amount(gold);
 	int temp = turns;
 	int time = gametime_to_int();
