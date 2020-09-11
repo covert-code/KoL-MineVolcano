@@ -348,7 +348,7 @@ void main(int turns) {
 	}
 
 	turns = turns - temp;
-	time = gametime_to_int();
+	time = gametime_to_int() - time;
 
 	newline();
 
